@@ -1,0 +1,48 @@
+
+name: Build Custom-Crops 3.5.7
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@v4
+
+      - name: Download Custom-Crops 3.5.7
+        uses: actions/checkout@v4
+        with:
+          repository: Xiao-MoMi/Custom-Crops
+          ref: 3.5.7
+          path: Custom-Crops
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+
+      - name: Build plugin
+        run: |
+          cd Custom-Crops
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+
+      - name: Collect JAR files
+        run: |
+          mkdir -p build-output
+          find Custom-Crops -type f -path '*/target/*.jar' -exec cp {} build-output/ \;
+          test -n "$(find build-output -name '*.jar' -print -quit)"
+
+      - name: Upload plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: Custom-Crops-1.20.6
+          path: build-output/*.jar
+          
