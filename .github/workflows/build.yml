@@ -19,7 +19,12 @@ jobs:
           repository: Xiao-MoMi/Custom-Crops
           ref: 3.5.7
           path: Custom-Crops
-
+      
+      - name: Add Flow-NBT mirror
+        run: |
+          cd Custom-Crops
+          sed -i '/repo.rapture.pw\/repository\/maven-releases/i\        maven("https://repo.titanvale.net/releases/")' build.gradle.kts
+          
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
